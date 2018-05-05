@@ -42,20 +42,35 @@ switch($action){
 	case "Save":
 		include('header.php');
 		//get the corps as an array and pass it to the view
-		if (empty($corp && $email && $zipcode && $owner && $phone))
+		/*if (empty($corp && $email && $zipcode && $owner && $phone))
 		{
 			$formCorp = getCorps($db, $id);
-			$corp = $email = $zipcode = $owner = $phone = '';
-			$emailErr = "* Email is required.";
-			$value = "Save";
-			include('corpForm.php');
-		}
-		else
-		{
-		updateCorp($db, $corp, $intcorp_dt, $email, $zipcode, $owner, $phone, $id);
-		$corps = getCorps($db, $id);
-		include('corporation.php');
-		}
+			$corp = $email = $zipcode = $owner = $phone = $data = '';*/
+			if (empty($email)) 
+			{
+				$formCorp = getCorps($db, $id);
+				$email = $data = '';
+				$emailErr = "* Email is required";
+				$value = "Save";
+				include('corpForm.php');
+			}
+ 
+			else if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+			{
+				$formCorp = getCorps($db, $id);
+				$email = $data = '';
+				$emailErr = "Invalid email format";
+				$value = "Save";
+				include('corpForm.php')	;				
+			}
+			
+			else
+			{
+				updateCorp($db, $corp, $intcorp_dt, $email, $zipcode, $owner, $phone, $id);
+				$corps = getCorps($db, $id);
+				include('corporation.php');
+			}
+			
 		include('footer.php');		
 		break;
 	case "Read":
