@@ -41,16 +41,30 @@ switch($action){
 		break;
 	case "Save":
 		include('header.php');
-		//get the corps as an array and pass it to the view
-		/*if (empty($corp && $email && $zipcode && $owner && $phone))
-		{
-			$formCorp = getCorps($db, $id);
-			$corp = $email = $zipcode = $owner = $phone = $data = '';*/
-			if (empty($email)) 
+		
+			if (empty($corp || $email || $zipcode || $owner || $phone)) 
 			{
 				$formCorp = getCorps($db, $id);
-				$email = $data = '';
-				$emailErr = "* Email is required";
+				if (empty($corp))
+				{				
+					$corpErr = "* A Corporation name is required";
+				}
+				if (empty($email))
+				{				
+					$emailErr = "* An Email is required";
+				}
+				if (empty($zipcode))
+				{				
+					$zipcodeErr = "* A zipcode is required";
+				}
+				if (empty($owner))
+				{				
+					$ownerErr = "* An Owner's name is required";
+				}
+				if (empty($phone))
+				{				
+					$phoneErr = "* A Phone number is required";
+				}
 				$value = "Save";
 				include('corpForm.php');
 			}
@@ -59,7 +73,7 @@ switch($action){
 			{
 				$formCorp = getCorps($db, $id);
 				$email = $data = '';
-				$emailErr = "Invalid email format";
+				$emailErr = "* Invalid email format";
 				$value = "Save";
 				include('corpForm.php')	;				
 			}

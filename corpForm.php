@@ -26,16 +26,16 @@ $email = $emailErr = "";
 
 <form method='post' action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?><?php echo $id; ?>">
 <label for='corp'>Corperation: </label>
-<input type='text' name='corp' value='<?php echo $formCorp['corp']; ?>' /><br />
+<input type='text' name='corp' value='<?php echo $formCorp['corp']; ?>' /><span class="error"><?php echo $corpErr; ?></span><br />
 <label for='email'>Email: </label>
 <input type='text' name='email' value='<?php echo $formCorp['email']; ?>'/>
 <span class="error"><?php echo $emailErr; ?></span><br />
 <label for='zipcode'>Zipcode: </label>
-<input type='text' name='zipcode' value='<?php echo $formCorp['zipcode']; ?>'/><br />
+<input type='text' name='zipcode' value='<?php echo $formCorp['zipcode']; ?>'/><span class="error"><?php echo $zipcodeErr; ?></span><br />
 <label for='owner'>Owner: </label>
-<input type='text' name='owner' value='<?php echo $formCorp['owner']; ?>'/><br />
+<input type='text' name='owner' value='<?php echo $formCorp['owner']; ?>'/><span class="error"><?php echo $ownerErr; ?></span><br />
 <label for='phone'>Phone: </label>
-<input type='text' name='phone' value='<?php echo $formCorp['phone']; ?>'/><br />
+<input type='text' name='phone' value='<?php echo $formCorp['phone']; ?>'/><span class="error"><?php echo $phoneErr; ?></span><br />
 <input type='submit' name='action' value='<?php echo $value; ?>' /><br />
 </form>
 </div>
