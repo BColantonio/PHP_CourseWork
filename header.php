@@ -23,6 +23,7 @@
     background-color: #f4511e; /* Orange */
     color: #ffffff;
 }
+.error {color: #FF0000;}
 </style>	
 <body>
 <div class="container">

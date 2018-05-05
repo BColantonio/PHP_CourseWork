@@ -8,6 +8,12 @@
 <?php
 $term_error = "";
 $message = $url = $success = "";
+	function test_input($data) {
+		  $data = trim($data);
+		  $data = stripslashes($data);
+		  $data = htmlspecialchars($data);
+		  return $data;
+	}
 	function getCorp(){
 		// grab the db object
 		global $db;

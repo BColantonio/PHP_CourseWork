@@ -19,6 +19,7 @@ $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_STRING) ?? null;
 $zipcode = filter_input(INPUT_POST, "zipcode", FILTER_SANITIZE_STRING) ?? null;
 $owner = filter_input(INPUT_POST, "owner", FILTER_SANITIZE_STRING) ?? null;
 $phone = filter_input(INPUT_POST, "phone", FILTER_SANITIZE_STRING) ?? null;
+$emailErr = '';
 switch($action){
 	case "Add":
 		$tz = 'US/Eastern';
@@ -40,11 +41,21 @@ switch($action){
 		break;
 	case "Save":
 		include('header.php');
-		include_once('header.php');
 		//get the corps as an array and pass it to the view
+		if (empty($corp && $email && $zipcode && $owner && $phone))
+		{
+			$formCorp = getCorps($db, $id);
+			$corp = $email = $zipcode = $owner = $phone = '';
+			$emailErr = "* Email is required.";
+			$value = "Save";
+			include('corpForm.php');
+		}
+		else
+		{
 		updateCorp($db, $corp, $intcorp_dt, $email, $zipcode, $owner, $phone, $id);
 		$corps = getCorps($db, $id);
 		include('corporation.php');
+		}
 		include('footer.php');		
 		break;
 	case "Read":
