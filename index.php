@@ -19,7 +19,7 @@ $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_STRING) ?? null;
 $zipcode = filter_input(INPUT_POST, "zipcode", FILTER_SANITIZE_STRING) ?? null;
 $owner = filter_input(INPUT_POST, "owner", FILTER_SANITIZE_STRING) ?? null;
 $phone = filter_input(INPUT_POST, "phone", FILTER_SANITIZE_STRING) ?? null;
-$emailErr = '';
+$emailErr = $corpErr = $phoneErr = $zipcodeErr = $ownerErr = '';
 switch($action){
 	case "Add":
 		$tz = 'US/Eastern';
@@ -30,18 +30,70 @@ switch($action){
 		//$intcorp_dt = (new \DateTime())->format('Y-m-d H:i:s', new DateTimeZone('America/NewYork'));
 		include('header.php');
 		$value = "Add";
-		// get the view template to create a new person
-		//$corp = getCorps($db, $id);
-		//$corps = getCorp();
-		include('sortSearchForm.php');
-		addCorp($db, $corp, $intcorp_dt, $email, $zipcode, $owner, $phone);
-		$corps = getCorp();
-		include_once('corpTable.php');
-		include('footer.php');
+		
+				$formCorp['id'] = '';
+				$formCorp['corp'] = '';
+				$formCorp['email'] = '';
+				$formCorp['zipcode'] = '';
+				$formCorp['owner'] = '';
+				$formCorp['phone'] = '';
+			if (empty($corp || $email || $zipcode || $owner || $phone)) 
+			{
+				if (empty($corp))
+				{		
+					$corpErr = "* A Corporation name is required";
+				}
+				if (empty($email))
+				{				
+					$emailErr = "* An Email is required";
+				}
+				if (empty($zipcode))
+				{				
+					$zipcodeErr = "* A zipcode is required";
+				}
+				if (empty($owner))
+				{				
+					$ownerErr = "* An Owner's name is required";
+				}
+				if (empty($phone))
+				{				
+					$phoneErr = "* A Phone number is required";
+				}
+				goto a;
+			}
+			
+			a:
+			if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+			{
+				$emailErr = "* Invalid email format. Please provide an email format ie: Example@example.com";
+				goto b;					
+			}
+			
+			b:
+			if (!preg_match("/^[a-zA-Z ]*$/",$owner)) 
+			{	
+				$ownerErr = "* Only letters and white space allowed";
+				goto c;
+			}
+			
+			c:
+			if (!preg_match("/^[0-9]{5}([- ]?[0-9]{4})?$/",$zipcode)) 
+			{	
+				$zipcodeErr = "* Please enter a valid 5 digit zipcode";	
+				include('corpForm.php');
+			}
+			
+			else
+			{
+				include('sortSearchForm.php');
+				addCorp($db, $corp, $intcorp_dt, $email, $zipcode, $owner, $phone);
+				$corps = getCorp();
+				include('corpTable.php');
+				include('footer.php');
+			}
 		break;
 	case "Save":
 		include('header.php');
-		
 			if (empty($corp || $email || $zipcode || $owner || $phone)) 
 			{
 				$formCorp = getCorps($db, $id);
@@ -68,14 +120,34 @@ switch($action){
 				$value = "Save";
 				include('corpForm.php');
 			}
- 
+			
 			else if (!filter_var($email, FILTER_VALIDATE_EMAIL))
 			{
 				$formCorp = getCorps($db, $id);
 				$email = $data = '';
-				$emailErr = "* Invalid email format";
+				$emailErr = "* Invalid email format. Please provide an email format ie: Example@example.com";
 				$value = "Save";
-				include('corpForm.php')	;				
+				include('corpForm.php');				
+			}
+			
+			else if (!preg_match("/^[a-zA-Z ]*$/",$owner)) 
+			{	
+				$formCorp = getCorps($db, $id);
+				$owner = $data = '';
+				$ownerErr = "* Only letters and white space allowed";
+				$value = "Save";
+				include('corpForm.php');					
+				
+			}
+			
+			else if (!preg_match("/^[0-9]{5}([- ]?[0-9]{4})?$/",$zipcode)) 
+			{	
+				$formCorp = getCorps($db, $id);
+				$owner = $data = '';
+				$zipcodeErr = "* Please enter a valid 5 digit zipcode";
+				$value = "Save";
+				include('corpForm.php');					
+				
 			}
 			
 			else
@@ -83,8 +155,7 @@ switch($action){
 				updateCorp($db, $corp, $intcorp_dt, $email, $zipcode, $owner, $phone, $id);
 				$corps = getCorps($db, $id);
 				include('corporation.php');
-			}
-			
+			}	
 		include('footer.php');		
 		break;
 	case "Read":
@@ -97,7 +168,7 @@ switch($action){
 		include('footer.php');		
 		break;
 	case "Update":
-	
+		$corpErr = $emailErr = $zipcodeErr = $ownerErr = $phoneErr = '';
 		include_once('header.php');
 		// Set a button value variable to Add
 		$value = "Save";
